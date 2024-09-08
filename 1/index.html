@@ -29,7 +29,7 @@
         for most images, but does eventually face issues with the emir.tif image. We also implement a normalized-cross-correlation metric, which we do by flattening the images and 
         normalizing them, and then dot producting the two resulting vectors together. We found that this also struggles with the emir.tif file. This leads to us implementing the 
         gradient-based metric. We use numpy.gradient to compute the gradient matrix in both dimensions (i.e. it returns 2 matrices, corresponding to each dimension). Given the 
-        gradients for both image 1 and 2, we take the L2-distance between the image pairs, and sum them together. We found that this was able to properly align the emir.tif file.
+        gradients for both image 1 and 2, we take the L2-distance between the gradient pairs, and sum them together. We found that this was able to properly align the emir.tif file.
     </p>
     <figure>
         <img src="media/colored_emir_l2.jpg", width="370", height="320">
