@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project 2: Fun with Filters and Frequencies!</title>
+</head>
+<body>
+    <h1>Overview</h1>
+    <p> For this project we worked with images and frequencies in the images, such as by "sharpening" an image by increasing the amount of high frequency data in the image,
+        blending two images together, creating hybrid images. We also learned how to make 
+        an edge detector using image gradients.
+    </p>
+
+    <h1>1.1 Finite Difference Operator</h1>
+    <p>
+        We use a simple derivative filter in order to compute the partial x and y (or horizontal and vertical) derivatives in the image. We can then take these 
+        partial derivatives to compute the gradient magnitude of the image. By taking the euclidean distance of the two derivatives for each pixel, we get the 
+        magnitude of the gradient at that pixel. This gradient we obtain of the image also functions as a sort of edge detector, and by thresholding the values we can 
+        remove excess noise in the image.
+    </p>
+
+    <h1>1.2 Derivative of Gaussian (DoG) Filter</h1>
+    <p> 
+        From the previous part, one thing we can notice is that the resulting gradients aren't very smooth and resulted in a lot of noise. We can deal with this by using 
+        a gaussian kernel and convolving it with the image to smooth it (and also remove higher frequency data). Then we can convolve the image with the previous derivative filter 
+        to compute the partial derivatives and the gradient of this smoothed image.
+
+        Since this process involves convolving using 2 different filters, we can simplify the process by convolving the two filters together to get a smoothed-derivative filter 
+        which can be applied to any image. 
+
+        In both of these processes, we can notice that the edges are no longer as sharp as before, as well as the noise not being nearly as pronounced in the resulting gradients.
+    </p>
+    <figure>
+        <img src="media/colored_emir_l2.jpg", width="370", height="320">
+        <img src="media/colored_emir_ncc.jpg", width="370", height="320">
+        <img src="media/colored_emir_grad.jpg", width="370", height="320">
+        <figcaption>
+            1. L2-align 2. NCC-align 3. Gradient-align
+        </figcaption>
+    </figure>
+
+
+    <h1>2.1 Image "Sharpening"</h1>
+    <p>
+        For image sharpening, we instead want the high frequency portion of the image, while the gaussian kernel gives us the low frequencies of the image. Luckily, 
+        we can obtain the high frequency by simply subtracting the low frequency from the image. Then, in order to sharpen the image, we take a multiple of this high 
+        frequency and add it to the original image, thereby amplifying the total amount of high frequency in the image.
+
+        Additionally, given the properties of the convolution, we can actually turn this process into a single filter. This results in the laplacian of a gaussian 
+        as the new kernel, which we can verify results in the same image as the previous process.
+    </p>
+
+    
+    <h1>2.2 Hybrid Images</h1>
+    <p> 
+    </p>
+
+    <figure>
+        <img src="media/colored_emir_grad.jpg", width="370", height="320">
+        <img src="media/best/colored_emir.jpg", width="320", height="300">
+        <figcaption>
+            1. Uncropped 2. Cropped and contrasted
+        </figcaption>
+
+        <img src="media/colored_onion_church.jpg", width="370", height="320">
+        <img src="media/best/colored_onion_church.jpg", width="320", height="300">
+        <figcaption>
+            1. Uncropped 2. Cropped and contrasted
+        </figcaption>
+    </figure>
+
+    <h1>Results</h1>
+    <p>
+        Here are the resulting images produced from the whole process as described before.
+    </p>
+    <img src="media/best/colored_cathedral.jpg", width="320", height="300">
+    <img src="media/best/colored_church.jpg", width="320", height="300">
+    <img src="media/best/colored_emir.jpg", width="320", height="300">
+    <img src="media/best/colored_harvesters.jpg", width="320", height="300">
+    <img src="media/best/colored_icon.jpg", width="320", height="300">
+    <img src="media/best/colored_lady.jpg", width="320", height="300">
+    <img src="media/best/colored_melons.jpg", width="320", height="300">
+    <img src="media/best/colored_monastery.jpg", width="320", height="300">
+    <img src="media/best/colored_onion_church.jpg", width="320", height="300">
+    <img src="media/best/colored_sculpture.jpg", width="320", height="300">
+    <img src="media/best/colored_self_portrait.jpg", width="320", height="300">
+    <img src="media/best/colored_three_generations.jpg", width="320", height="300">
+    <img src="media/best/colored_tobolsk.jpg", width="320", height="300">
+    <img src="media/best/colored_train.jpg", width="320", height="300">
+</body>
+</html>
