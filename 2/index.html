@@ -17,26 +17,76 @@
         magnitude of the gradient at that pixel. This gradient we obtain of the image also functions as a sort of edge detector, and by thresholding the values we can 
         remove excess noise in the image.
     </p>
+    <figure>
+        <img src="cameraman.png", width="320", height="320">
+        <img src="camerman_dx.jpg", width="320", height="320">
+        <figcaption>
+            The partial derivative in the x direction (or horizontal edges)
+        </figcaption>
+        <img src="camerman_dy.jpg", width="320", height="320">
+        <figcaption>
+            The partial derivative in the y direction (or vertical edges)
+        </figcaption>
+        <img src="camerman_grad.jpg", width="320", height="320">
+        <img src="thresholded_gray.jpg", width="320", height="320">
+        <figcaption>
+            The gradient and the thresholded gradient. As we can see this results in the edges, but also includes a lot of noise.
+        </figcaption>
+    </figure>
 
     <h1>1.2 Derivative of Gaussian (DoG) Filter</h1>
     <p> 
         From the previous part, one thing we can notice is that the resulting gradients aren't very smooth and resulted in a lot of noise. We can deal with this by using 
         a gaussian kernel and convolving it with the image to smooth it (and also remove higher frequency data). Then we can convolve the image with the previous derivative filter 
         to compute the partial derivatives and the gradient of this smoothed image.
-
-        Since this process involves convolving using 2 different filters, we can simplify the process by convolving the two filters together to get a smoothed-derivative filter 
-        which can be applied to any image. 
-
-        In both of these processes, we can notice that the edges are no longer as sharp as before, as well as the noise not being nearly as pronounced in the resulting gradients.
     </p>
     <figure>
-        <img src="media/colored_emir_l2.jpg", width="370", height="320">
-        <img src="media/colored_emir_ncc.jpg", width="370", height="320">
-        <img src="media/colored_emir_grad.jpg", width="370", height="320">
+        <img src="gaussian.png">
         <figcaption>
-            1. L2-align 2. NCC-align 3. Gradient-align
+            The gaussian kernel used to convolve the image.
+        </figcaption>
+        <img src="gaussian_dx.jpg", width="320", height="320">
+        <figcaption>
+            The partial derivative in the x direction (or horizontal edges)
+        </figcaption>
+        <img src="gaussian_dy.jpg", width="320", height="320">
+        <figcaption>
+            The partial derivative in the y direction (or vertical edges)
+        </figcaption>
+        <img src="gaussian_grad.jpg", width="320", height="320">
+        <img src="thresholded_gaussian.jpg", width="320", height="320">
+        <figcaption>
+            The gradient and the thresholded gradient. Similar to before, we get the edges, but this time they're smoother and there is much less noise.
         </figcaption>
     </figure>
+    <p>
+        Since this process involves convolving using 2 different filters, we can simplify the process by convolving the two filters together to get a smoothed-derivative filter 
+        which can be applied to any image. 
+    </p>
+    <figure>
+        <img src="dx.png">
+        <img src="dy.png">
+        <figcaption>
+            The resulting dx dy kernels obtained by convolving the difference filters with the gaussian kernel.
+        </figcaption>
+        <img src="gaussian_dx_2.jpg", width="320", height="320">
+        <figcaption>
+            The partial derivative in the x direction (or horizontal edges)
+        </figcaption>
+        <img src="gaussian_dy_2.jpg", width="320", height="320">
+        <figcaption>
+            The partial derivative in the y direction (or vertical edges)
+        </figcaption>
+        <img src="gaussian_grad_2.jpg", width="320", height="320">
+        <img src="thresholded_gaussian_2.jpg", width="320", height="320">
+        <figcaption>
+            The gradient and the thresholded gradient.
+        </figcaption>
+    </figure>
+    <p>
+        As we can see, there is no difference between doing two convolutions, or doing a single convolution with the 
+        merged filter between.
+    </p>
 
 
     <h1>2.1 Image "Sharpening"</h1>
@@ -44,47 +94,242 @@
         For image sharpening, we instead want the high frequency portion of the image, while the gaussian kernel gives us the low frequencies of the image. Luckily, 
         we can obtain the high frequency by simply subtracting the low frequency from the image. Then, in order to sharpen the image, we take a multiple of this high 
         frequency and add it to the original image, thereby amplifying the total amount of high frequency in the image.
-
+    </p>
+    <figure>
+        <img src="taj.jpg", width="320", height="320">
+        <figcaption>
+            The original image
+        </figcaption>
+        <img src="sharpened_taj.jpg", width="320", height="320">
+        <figcaption>
+            The sharpened image
+        </figcaption>
+    </figure>
+    <p>
         Additionally, given the properties of the convolution, we can actually turn this process into a single filter. This results in the laplacian of a gaussian 
         as the new kernel, which we can verify results in the same image as the previous process.
     </p>
-
-    
-    <h1>2.2 Hybrid Images</h1>
-    <p> 
-    </p>
-
     <figure>
-        <img src="media/colored_emir_grad.jpg", width="370", height="320">
-        <img src="media/best/colored_emir.jpg", width="320", height="300">
+        <img src="unsharp.png">
         <figcaption>
-            1. Uncropped 2. Cropped and contrasted
+            The unsharp kernel (or the laplacian of the gaussian). Notice the darker region around the center is negative, the yellow is large positive, and the light purple is near 0.
         </figcaption>
-
-        <img src="media/colored_onion_church.jpg", width="370", height="320">
-        <img src="media/best/colored_onion_church.jpg", width="320", height="300">
+        <img src="taj.jpg", width="320", height="320">
         <figcaption>
-            1. Uncropped 2. Cropped and contrasted
+            The original image
+        </figcaption>
+        <img src="sharpened_taj_2.jpg", width="320", height="320">
+        <figcaption>
+            The sharpened image using the kernel, which looks the same as the sharpened image from above.
         </figcaption>
     </figure>
 
-    <h1>Results</h1>
+    <figure>
+        <img src="owl.jpg", width="320", height="320">
+        <figcaption>
+            The original image
+        </figcaption>
+        <img src="sharpened_owl.jpg", width="320", height="320">
+        <figcaption>
+            The sharpened image. Notice the eyes "popping" out a bit more
+        </figcaption>
+        <img src="high_freq_owl.jpg", width="320", height="320">
+        <figcaption>
+            The high frequencies in the image.
+        </figcaption>
+    </figure>
+
+    <figure>
+        <img src="campanile.jpg", width="640", height="320">
+        <figcaption>
+            The original image
+        </figcaption>
+        <img src="sharpened_campanile.jpg", width="640", height="320">
+        <figcaption>
+            The sharpened image. Mainly look at the tower and you can notice it standing out a bit more, especially with the lighting
+        </figcaption>
+        <img src="high_freq_campanile.jpg", width="640", height="320">
+        <figcaption>
+            The high frequencies in the image.
+        </figcaption>
+    </figure>
+
+    
+    <h1>2.2 Hybrid Images</h1>
     <p>
-        Here are the resulting images produced from the whole process as described before.
+        Hybrid images are images which look like one thing from up close and a a different image from far away. We do this by overlaying the high frequencies  
+        of one image (which are more noticeable from up close) on top of the low frequencies of another (which are more noticeable from far away). Using the 
+        unsharp filter and the gaussian kernel, we extract the high and low frequencies from the two different images and add them together.
     </p>
-    <img src="media/best/colored_cathedral.jpg", width="320", height="300">
-    <img src="media/best/colored_church.jpg", width="320", height="300">
-    <img src="media/best/colored_emir.jpg", width="320", height="300">
-    <img src="media/best/colored_harvesters.jpg", width="320", height="300">
-    <img src="media/best/colored_icon.jpg", width="320", height="300">
-    <img src="media/best/colored_lady.jpg", width="320", height="300">
-    <img src="media/best/colored_melons.jpg", width="320", height="300">
-    <img src="media/best/colored_monastery.jpg", width="320", height="300">
-    <img src="media/best/colored_onion_church.jpg", width="320", height="300">
-    <img src="media/best/colored_sculpture.jpg", width="320", height="300">
-    <img src="media/best/colored_self_portrait.jpg", width="320", height="300">
-    <img src="media/best/colored_three_generations.jpg", width="320", height="300">
-    <img src="media/best/colored_tobolsk.jpg", width="320", height="300">
-    <img src="media/best/colored_train.jpg", width="320", height="300">
+    <figure>
+        <img src="DerekPicture.jpg", width="240", height="320">
+        <img src="nutmeg.jpg", width="400", height="320">
+        <img src="hybrid_DerekPicture_nutmeg_10_10.png", width="200", height="320">
+        <figcaption>
+            Example we were given.
+        </figcaption>
+    </figure>
+
+    <figure>
+        <img src="owl.jpg", width="320", height="320">
+        <img src="capybara.jpg", width="320", height="320">
+        <img src="hybrid_capybara_owl_5_5.png", width="320", height="400">
+        <figcaption>
+            Combining an owl and a capybara.
+        </figcaption>
+    </figure>
+
+    <figure>
+        <img src="thor.jpg", width="320", height="320">
+        <img src="ferret.jpg", width="320", height="320">
+        <img src="hybrid_thor_ferret_8_8.jpg", width="320", height="320">
+        <figcaption>
+            Combining an Thor from Pirate Software and a ferret.
+        </figcaption>
+        <img src="hybrid_thor_ferret_5_5.png", width="320", height="320">
+        <figcaption>
+            A previously failed version of this hybrid image. I flipped which should be high and low, which resulted in some nightmare fuel.
+        </figcaption>
+    </figure>
+
+    <figure>
+        <img src="hilfinger.jpg", width="200", height="320">
+        <img src="efros.jpg", width="350", height="320">
+        <img src="hybrid_hilfinger_efros_5_5.png", width="320", height="400">
+        <figcaption>
+            Combining professors Hilfinger and Efros.
+        </figcaption>
+    </figure>
+    <p>
+        Below we have the Fourier analysis of the owl-capybara hybrid image. As we can see, the gaussian removes a large portion of the high frequency, while the 
+        laplacian keeps most of it and removes most of the lower frequency from the data, but these filters are not perfect which results in parts of the high/low staying.
+    </p>
+    <figure>
+        <img src="img1.png", width="430", height="320">
+        <img src="img2.png", width="430", height="320">
+        <figcaption>
+            The log magnitude of the capybara on the left and the owl on the right.
+        </figcaption>
+        <img src="low.png", width="430", height="320">
+        <img src="high.png", width="430", height="320">
+        <figcaption>
+            The log magnitudes of the respective images after filtering. As we can see, the low-pass filter attenuates the frequencies outside of the center (and the axes) 
+            whereas the high-pass filter attenuates the opposte, the center and axes.
+        </figcaption>
+        <img src="hybird.png", width="430", height="320">
+        <figcaption>
+            The resulting log magnitude of the combined hybrid image.
+        </figcaption>
+    </figure>
+
+    <p>
+        Bells and Whistles: We apply color to the same owl and capybara image. First, we try using the color for the owl (the high frequency) and then for the capybara (the low frequency).
+        When giving the lower frequency the color, the result is noticeably better. This is probably due to the fact we can barely perceive the higher frequencies from afar, but while up close 
+        we can still perceive the lower frequencies, which interferes with the colored high frequency.
+    </p>
+    <figure>
+        <img src="hybrid_capybara_owl_5_5_2.png", width="320", height="400">
+        <figcaption>
+            Using color for the owl. It is cool how the eyes are properly colored, but the effect isn't that great.
+        </figcaption>
+        <img src="colored_hybrid_capybara_owl_5_5.png", width="320", height="400">
+        <figcaption>
+            Using color for the capybara. The effect is much more noticeable, and the capybara is properly colored at a distance.
+        </figcaption>
+    </figure>
+
+    <h1>2.3 Gaussian and Laplacian Stacks</h1>
+    <p>
+        The goal of the next two sections is to cleanly blend two images together. The first step of this process is to compute a gaussian stack, where each 
+        layer of the stack is computed by convolving the previous layer with a gaussian, thereby getting lower and lower frequencies from the image. 
+        We can use this to compute a laplacian stack, which is done by taking the difference between two layers of the gaussian stack, obtaining the frequencies which 
+        are removed by the gaussian kernel. We do this with the two images we want to blend, as well as compute the gaussian stack for a mask. 
+    </p>
+    <figure>
+        <img src="stacks/gaussian_apple_0.jpg", width="320", height="320">
+        <img src="stacks/gaussian_apple_2.jpg", width="320", height="320">
+        <img src="stacks/gaussian_apple_4.jpg", width="320", height="320">
+        <figcaption>
+            The masked gaussian at various levels for the apple
+        </figcaption>
+        <img src="stacks/gaussian_orange_0.jpg", width="320", height="320">
+        <img src="stacks/gaussian_orange_2.jpg", width="320", height="320">
+        <img src="stacks/gaussian_orange_4.jpg", width="320", height="320">
+        <figcaption>
+            The masked gaussian at various levels for the orange
+        </figcaption>
+        <img src="stacks/laplacian_apple_1.jpg", width="320", height="320">
+        <img src="stacks/laplacian_apple_3.jpg", width="320", height="320">
+        <img src="stacks/laplacian_apple_5.jpg", width="320", height="320">
+        <figcaption>
+            The masked laplacian at various levels for the apple
+        </figcaption>
+        <img src="stacks/laplacian_orange_1.jpg", width="320", height="320">
+        <img src="stacks/laplacian_orange_3.jpg", width="320", height="320">
+        <img src="stacks/laplacian_orange_5.jpg", width="320", height="320">
+        <figcaption>
+            The masked laplacian at various levels for the orange
+        </figcaption>
+        <img src="stacks/blended_apple_orange_-1.jpg", width="320", height="320">
+        <img src="stacks/blended_apple_orange_0.jpg", width="320", height="320">
+        <img src="stacks/blended_apple_orange_2.jpg", width="320", height="320">
+        <img src="stacks/blended_apple_orange_4.jpg", width="320", height="320">
+        <img src="stacks/blended_apple_orange_7.jpg", width="320", height="320">
+        <figcaption>
+            Blending at different levels (top level, level 1, 3, 5, and the bottom level with the gaussians)
+        </figcaption>
+    </figure>
+
+    <h1>2.4 Multiresolution Blending</h1>
+    <p>
+        Once we have the gaussian and laplacian stacks for the images, as well as the gaussian stack for the mask, we can begin blending the images together. This is done 
+        by masking each layer of the laplacian stack (through elementwise multiplication) with the gaussian stack layer for the mask and adding them together. 
+        These are additionally added to the lowest level gaussians which is also masked by the lowest level gaussian of the mask. This results in a much cleaner blend between 
+        the two images, without an abrupt transition.
+    </p>
+    <figure>
+        <img src="apple.jpeg", width="320", height="320">
+        <img src="orange.jpeg", width="320", height="320">
+        <img src="mask.jpg", width="320", height="320">
+        <img src="blended_oraple.jpg", width="320", height="320">
+        <figcaption>
+            The example with the orange and apple.
+        </figcaption>
+    </figure>
+
+    <p>
+        One thing I thought would be cool would be comparing skins in game. These all use the simple vertical mask.
+    </p>
+
+    <figure></figure>
+        <img src="genji1.jpg", width="570", height="320">
+        <img src="genji2.jpg", width="570", height="320">
+        <img src="mask.jpg", width="570", height="320">
+        <img src="blended_genji12.jpg", width="570", height="320">
+        <figcaption>
+            Comparing the default skin for Genji in Overwatch 1 and 2.
+        </figcaption>
+    </figure>
+
+    <figure></figure>
+        <img src="zen1.jpg", width="570", height="320">
+        <img src="zen2.jpg", width="570", height="320">
+        <img src="mask.jpg", width="570", height="320">
+        <img src="blended_zen12.jpg", width="570", height="320">
+        <figcaption>
+            Comparing the two recolored skins for Zenyatta.
+        </figcaption>
+    </figure>
+
+    <figure></figure>
+        <img src="rein.jpg", width="570", height="320">
+        <img src="torb.jpg", width="570", height="320">
+        <img src="rein_mask.jpg", width="570", height="320">
+        <img src="blended_torb_rein.jpg", width="570", height="320">
+        <figcaption>
+            This one uses a custom mask, where I tried to "replace" the head of the hammer with Torbjorn. While the blending works properly, the result 
+            isn't as comedic as I had hoped.
+        </figcaption>
+    </figure>
 </body>
 </html>
