@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project 4: Stitching Photo Mosaics</title>
+</head>
+<body>
+    <h1>Part A: Taking Photos</h1>
+    <p>We take a few photos while fixing the center of projection, and rotating the camera while taking photos. <br>
+        Below are some examples which were used for part A.
+    </p>
+
+    <figure>
+        <img src="media/0019.jpg", width="320">
+        <img src="media/ilios1.jpg", width="320">
+        <img src="media/IMG_2205.JPEG", width="320">
+        <figcaption>
+            These are, the Campanile, the map Ilios from Overwatch, and my room with an otamatone as a prop.
+        </figcaption>
+    </figure>
+
+
+    <h1>Recovering Homographies</h1>
+    <p> In order to compute for the homographies, we set up a system of equations, using H * [x, y, 1] = [wx', wy', w]. Given this, we can solve for H, which has 8 unknowns. 
+        To do so, we select at least 4 correspondences between two images, and use least squares to solve for the coefficients. <br>
+
+        The system of equations is basically A = [[x, y, 1, 0, 0, 0, -x'*x, -y'*x], [0, 0, 0, x, y, 1, -x'*y, -y'*y]], x = [a,b,c,d,e,f,g,h], b=[x', y'], for each of the corresponding points.
+    </p>
+
+    
+    <h1>Warping Images</h1>
+    <p> For this, we first use the homography matrix H on each of the corners to find the structure of the resulting warp, and create a bounding box for it. 
+        We then warp, using the inverse warp from the points in the quadrilateral, and use interpolation to get the pixel values of the resulting image. (This also 
+        has to be translated by the upper left corner to go to 0, 0). <br>
+        Below are some results, as well as the result of rectifying a few different things.
+    </p>
+
+    <figure>
+        <img src="media/0019.jpg", width="320">
+        <img src="media/0028.jpg", width="320">
+        <img src="media/warped_camp.jpg", width="320">
+        <img src="media/ilios1.jpg", width="320">
+        <img src="media/ilios2.jpg", width="320">
+        <img src="media/warped_ilios.jpg", width="320">
+        <figcaption>
+            The original images as well as their warp onto the 2nd image
+        </figcaption>
+
+        <img src="media/IMG_2196.JPEG", width="320">
+        <img src="media/rectified_keyboard.jpg", width="320">
+        <img src="media/IMG_2197.JPEG", width="320">
+        <img src="media/rectified_mochi.jpg", width="320">
+        <figcaption>
+            Rectifying the keyboard to be a 3:1 rectangle, and warping the mochi box to a square. This is done by choosing the 4 corners as corresponding points to the rectangle we specify.
+        </figcaption>
+    </figure>
+
+    <h1>Blending Images</h1>
+    <p>
+        First, we have to warp one image onto the other. From there, we need to specify the size of the resulting bounding box for both images. We do this by 
+        transforming one of the corresponding points using H, and find how much it is translated by. Then we specify the size of the resulting image by
+        taking the minimum and maximum of the resulting corners, as well as get how much we need to translate the indices by for the top left corner, which gives us 
+        where to put the images. From there, we first create a mask using the distance from the image pixels to the borders using cv2.distanceTransform (which gives the distance to the 
+        nearest white pixel). Then, we create a gaussian and laplacing pyramid (using project 2 code). We merge it in a similar way, but we simply use the average of the 
+        distance mask to merge each layer of the pyramid. Placing these pixels onto the final grid gives us the resulting mosaic image. <br>
+
+        While I don't have an example of 3 images (at least yet), the way to merge multiple images is by saving how much the reference points have been translated, 
+        and applying this translation to its reference points with the other image before passing it into the function again. <br>
+
+        Below are the images as well as their resulting mosaic image. There is a bit of artifacting on the campanile and otamatone scene but this is 
+        due to camera movements (I had actually walked a bit while taking the campanile photo, and it's hard to not move the camera when the scene is as small as a room), this is most noticeable with the Ilios scene as it is easy 
+        to perfectly rotate the camera in-game, resulting in no issues when merging.
+    </p>
+    <img src="media/0019.jpg", width="320">
+    <img src="media/0028.jpg", width="320">
+    <img src="media/camp_mosaic.jpg", width="320">
+    <img src="media/ilios1.jpg", width="320">
+    <img src="media/ilios2.jpg", width="320">
+    <img src="media/ilios_mosaic.jpg", width="320">    
+    <img src="media/IMG_2205.JPEG", width="320">
+    <img src="media/IMG_2206.JPEG", width="320">
+    <img src="media/otamatone_mosaic.jpg", width="320">
+</body>
+</html>
