@@ -10,11 +10,11 @@
     </p>
 
     <figure>
-        <img src="media/0019.jpg", width="320">
-        <img src="media/ilios1.jpg", width="320">
-        <img src="media/IMG_2205.JPEG", width="320">
-        <img src="media/IMG_2209.JPEG", width="320">
-        <img src="media/IMG_2212.JPEG", width="320">
+        <img src="media/0019.jpg", width="640">
+        <img src="media/ilios1.jpg", width="640">
+        <img src="media/IMG_2205.JPEG", width="640">
+        <img src="media/IMG_2209.JPEG", width="640">
+        <img src="media/IMG_2212.JPEG", width="640">
         <figcaption>
             These are, the Campanile, the map Ilios from Overwatch, and my room with an otamatone as a prop, the BAMPFA, and some buildings outside of my apartment.
         </figcaption>
@@ -24,8 +24,6 @@
     <h1>Recovering Homographies</h1>
     <p> In order to compute for the homographies, we set up a system of equations, using H * [x, y, 1] = [wx', wy', w]. Given this, we can solve for H, which has 8 unknowns. 
         To do so, we select at least 4 correspondences between two images, and use least squares to solve for the coefficients. <br>
-
-        The system of equations is basically A = [[x, y, 1, 0, 0, 0, -x'*x, -y'*x], [0, 0, 0, x, y, 1, -x'*y, -y'*y]], x = [a,b,c,d,e,f,g,h], b=[x', y'], for each of the corresponding points.
     </p>
 
     
@@ -37,22 +35,22 @@
     </p>
 
     <figure>
-        <img src="media/0019.jpg", width="320">
-        <img src="media/0028.jpg", width="320">
-        <img src="media/warped_camp.jpg", width="320">
-        <img src="media/ilios1.jpg", width="320">
-        <img src="media/ilios2.jpg", width="320">
-        <img src="media/warped_ilios.jpg", width="320">
+        <img src="media/0019.jpg", width="640">
+        <img src="media/0028.jpg", width="640">
+        <img src="media/warped_camp.jpg", width="640">
+        <img src="media/ilios1.jpg", width="640">
+        <img src="media/ilios2.jpg", width="640">
+        <img src="media/warped_ilios.jpg", width="640">
         <figcaption>
             The original images as well as their warp onto the 2nd image
         </figcaption>
 
-        <img src="media/IMG_2196.JPEG", width="320">
-        <img src="media/rectified_keyboard.jpg", width="320">
-        <img src="media/IMG_2197.JPEG", width="320">
-        <img src="media/rectified_mochi.jpg", width="320">
+        <img src="media/IMG_2196.JPEG", width="640">
+        <img src="media/rectified_keyboard.jpg", width="640">
+        <img src="media/IMG_2197.JPEG", width="640">
+        <img src="media/rectified_mochi.jpg", width="640">
         <figcaption>
-            Rectifying the keyboard to be a 3:1 rectangle, and warping the mochi box to a square. This is done by choosing the 4 corners as corresponding points to the rectangle we specify.
+            Rectifying the keyboard to be a 3:1 rectangle, and warping the mochi box to a square. This is done by choosing the 4 corners on the rectange we specify as the corresponding points.
         </figcaption>
     </figure>
 
@@ -63,26 +61,92 @@
         taking the minimum and maximum of the resulting corners, as well as get how much we need to translate the indices by for the top left corner, which gives us 
         where to put the images. From there, we first create a mask using the distance from the image pixels to the borders using cv2.distanceTransform (which gives the distance to the 
         nearest white pixel). Then, we create a gaussian and laplacing pyramid (using project 2 code). We merge it in a similar way, but we simply use the average of the 
-        distance mask to merge each layer of the pyramid. Placing these pixels onto the final grid gives us the resulting mosaic image. <br>
+        distance mask to merge each layer of the pyramid. Placing these pixels onto the final grid gives us the resulting mosaic image. <br><br>
+        Below are the images as well as their resulting mosaic image. </p>
+    <img src="media/ilios1.jpg", width="640">
+    <img src="media/ilios2.jpg", width="640">
+    <img src="media/ilios_mosaic.jpg", width="640">    
+    <img src="media/IMG_2208.JPEG", width="640">
+    <img src="media/IMG_2209.JPEG", width="640">
+    <img src="media/bampfa_mosaic.jpg", width="640">
+    <img src="media/IMG_2212.JPEG", width="640">
+    <img src="media/IMG_2213.JPEG", width="640">
+    <img src="media/building_mosaic.jpg", width="640">
+    
+    <h1>Automatic Corner Detection</h1>
+    <p>
+        We use the provided harris corner code to detect potential corners in the image. However, the number of potential corners generated is too much, so 
+        the next few steps aim at reducing and matching the appropriate corners between images to warp and merge them together, using our previous steps, automatically.
+    </p>
+    <figure>
+        <img src="media/ilios1.jpg", width="640">
+        <img src="media/corners.jpg", width="640">
+        <figcaption>As we can see, there are far too many corners to do anything with them at this current stage.</figcaption>
+    </figure>
 
-        While I don't have an example of 3 images (at least yet), the way to merge multiple images is by saving how much the reference points have been translated, 
-        and applying this translation to its reference points with the other image before passing it into the function again. <br>
+    <h1>Part B: Adaptive Non-Maximal Suppression</h1>
+    <p>For this, we essentially search over each corner, and find the minimal radius which results in a pixel response that "supresses" this corner, 
+        as in its response is less than 0.9 the response of this other pixel. Then, we take the top few points, which we choose to be 500. This helps to provide a more 
+        even distribution of corners throughout the image, as well as significantly reducing the total number of them, and also selects ones that tend to have a stronger response.
+    </p>
+    <figure>
+        <img src="media/corners.jpg", width="640">
+        <img src="media/anms.jpg", width="640">
+        <figcaption>As we can see, the number of corners is reduced significantly, and are somewhat evenly dispersed.</figcaption>
+    </figure>
 
-        Below are the images as well as their resulting mosaic image. 
-    <!-- <img src="media/0019.jpg", width="320">
-    <img src="media/0028.jpg", width="320">
-    <img src="media/camp_mosaic.jpg", width="320"> -->
-    <img src="media/ilios1.jpg", width="320">
-    <img src="media/ilios2.jpg", width="320">
-    <img src="media/ilios_mosaic.jpg", width="320">    
-    <!-- <img src="media/IMG_2205.JPEG", width="320">
-    <img src="media/IMG_2206.JPEG", width="320">
-    <img src="media/otamatone_mosaic.jpg", width="320"> -->
-    <img src="media/IMG_2208.JPEG", width="320">
-    <img src="media/IMG_2209.JPEG", width="320">
-    <img src="media/bampfa_mosaic.jpg", width="320">
-    <img src="media/IMG_2212.JPEG", width="320">
-    <img src="media/IMG_2213.JPEG", width="320">
-    <img src="media/building_mosaic.jpg", width="320">
+    <h1>Feature Extraction and Matching</h1>
+    <p>
+        We take a 40x40 patch around each of the pixels chosen by the ANMS process, and downscale this to an 8x8 grayscale patch (and appropriately low passing it to prevent aliasing). We also normalize these patches to have 0 mean and 1 standard deviation. 
+        Once we have the patches for each corner, in each image. We do feature matching. This is done by first computing the L2 distance between the flattened features between 
+        features in image 1 and 2. Then, for each corner in image 1, we look for the nearest 1 and 2 neighbors in image 2. Then we compute the ratio between the squared 
+        distance between the 1st and 2nd neighbor, and if this is above a certain threshold, we consider this to be a match. Just in case, we also do this in the reverse direction, and see if this matches in the other direction 
+        as well. The idea behind this is that, the difference between the 1st and 2nd neighbor for correct matches should have a low ratio, whereas for false matches, the ratio should be closer to 1. 
+        We choose a threshold of 0.8 for this. This helps to remove a lot of the extra outliers before we do RANSAC, as well as helping to pair corners between the images.
+    </p>
+    <figure>
+        <img src="media/features.jpg", width="640">
+        <figcaption>Some example features (grayscale) that we have extracted, for the sake of visualization these have not been normalized.</figcaption>
+        <img src="media/correspondences.jpg", width="640">
+        <figcaption>The output of the feature matching algorithm, which has noticeably reduced the total number of corners even further from ANMS, but some are still obviously wrong.</figcaption>
+    </figure>
+
+    <h1>RANSAC</h1>
+    <p>
+        The idea of this is finding which points are proper matches between the two images before computing the homography. To do this, we take random samples of 4 corners, 
+        and computing the exact homography from this. Then, we compute what the resulting pixel values are of all the other corners in relation to where they should be in image 2. 
+        The number of corners that match (as in their distance is under some threshold, we chose a threshold of 2), we count these as inliers. Then, for the largest group of inliers for any random pixels, we recompute 
+        the homography using all of the inliers, and use this to warp and merge images automatically.
+    </p>
+    <figure>
+        <img src="media/ransanc.jpg", width="640">
+        <figcaption>The output of the RANSAC, which are all believeable correspondences.</figcaption>
+    </figure>
+
+    <figure>
+        <img src="media/ilios_mosaic.jpg", width="640">
+        <img src="media/automatic_ilios.jpg", width="640">
+        <figcaption>The manual vs automatic mosaic of Ilios.</figcaption>
+    </figure>
+    <figure>
+        <img src="media/bampfa_mosaic.jpg", width="640">
+        <img src="media/automatic_bampfa.jpg", width="640">
+        <figcaption>The manual vs automatic mosaic of the BAMPFA and crescent lawn.</figcaption>
+    </figure>
+    <figure>
+        <img src="media/building_mosaic.jpg", width="640">
+        <img src="media/automatic_building.jpg", width="640">
+        <figcaption>The manual vs automatic mosaic of the building outside of my apartment.</figcaption>
+    </figure>
+    <p>Some other mosaics I generated automatically, this time of the map Nepal from Overwatch, as well as Li Ka Shing</p>
+    <img src="media/nepal1.jpg", width="640">
+    <img src="media/nepal2.jpg", width="640">
+    <img src="media/automatic_nepal.jpg", width="640">
+    <img src="media/lks_0002.jpg", width="640">
+    <img src="media/lks_0003.jpg", width="640">
+    <img src="media/lks_0005.jpg", width="640">
+    <img src="media/automatic_lks.jpg", width="640">
+
+
 </body>
 </html>
