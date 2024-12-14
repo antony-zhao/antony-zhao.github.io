@@ -103,7 +103,10 @@
         of 125 minibatches of size 8000 (so around 5x longer than the staff solution). This took around 30 minutes to train. <br><br>
 
         To reconstruct a full image given the transformation matrix, we sample over all u,v pixel coordinates for the image and get the pixel color, 
-        and reconstruct the full image using these colors giving us the example renders below.
+        and reconstruct the full image using these colors giving us the example renders below.<br><br>
+
+        I also implemented background rendering. This is done by adding some final background color * the probability of the ray not terminating (which means we can see the background). 
+        I simply did white as it stands out a lot.
     </p>
     <figure>
         <img src="media/rendered_0.png", width="480">
@@ -126,9 +129,10 @@
     <figure>
         <img src="media/render1.gif", width="480">
         <img src="media/render.gif", width="480">
+        <img src="media/background_render.gif", width="480">
         <figcaption>
             A generated video using the test example transformation matrices we were given. 
-            The first is at 10 epochs (5 min) and the second is at 50 epochs (30 min)
+            The first is at 10 epochs (5 min) and the second is at 50 epochs (30 min), and the 3rd is with a different background.
         </figcaption>
     </figure>
     
